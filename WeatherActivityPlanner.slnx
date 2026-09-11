@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WeatherActivityPlanner/WeatherActivityPlanner.csproj" />
+  </Folder>
+</Solution>

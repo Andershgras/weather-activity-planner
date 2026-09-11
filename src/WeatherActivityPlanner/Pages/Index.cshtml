@@ -1,0 +1,28 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="dashboard-header">
+    <p class="eyebrow">Weather planning dashboard</p>
+    <h1>Weather Activity Planner</h1>
+    <p class="dashboard-intro">
+        Plan simple activities with weather context from Open-Meteo.
+    </p>
+</section>
+
+<section class="dashboard-grid" aria-label="Dashboard overview">
+    <div class="dashboard-panel">
+        <h2>Current Weather</h2>
+        <p>Open-Meteo integration will be added in the next implementation step.</p>
+    </div>
+    <div class="dashboard-panel">
+        <h2>Activity Plan</h2>
+        <p>Activity suggestions will appear here once weather data is available.</p>
+    </div>
+    <div class="dashboard-panel">
+        <h2>Saved Data</h2>
+        <p>Database-backed favorites or saved plans will be added in a later step.</p>
+    </div>
+</section>
