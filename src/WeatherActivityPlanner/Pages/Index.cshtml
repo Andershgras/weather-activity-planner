@@ -15,11 +15,37 @@
 <section class="dashboard-grid" aria-label="Dashboard overview">
     <div class="dashboard-panel">
         <h2>Current Weather</h2>
-        <p>Open-Meteo integration will be added in the next implementation step.</p>
+        @if (Model.CurrentWeather is not null)
+        {
+            <p class="location-name">@Model.CurrentWeather.LocationName</p>
+            <dl class="weather-details">
+                <div>
+                    <dt>Temperature</dt>
+                    <dd>@Model.CurrentWeather.TemperatureCelsius.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)&deg;C</dd>
+                </div>
+                <div>
+                    <dt>Wind</dt>
+                    <dd>@Model.CurrentWeather.WindSpeedKmh.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) km/h</dd>
+                </div>
+                <div>
+                    <dt>Precipitation</dt>
+                    <dd>@Model.CurrentWeather.PrecipitationMm.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) mm</dd>
+                </div>
+                <div>
+                    <dt>Rain</dt>
+                    <dd>@(Model.CurrentWeather.HasRain ? "Rain detected" : "No rain detected")</dd>
+                </div>
+            </dl>
+            <p class="weather-updated">Updated @Model.CurrentWeather.ObservedAt.ToString("yyyy-MM-dd HH:mm")</p>
+        }
+        else
+        {
+            <p class="weather-error">@Model.WeatherErrorMessage</p>
+        }
     </div>
     <div class="dashboard-panel">
         <h2>Activity Plan</h2>
-        <p>Activity suggestions will appear here once weather data is available.</p>
+        <p>Activity suggestion rules will be added in the next implementation step.</p>
     </div>
     <div class="dashboard-panel">
         <h2>Saved Data</h2>

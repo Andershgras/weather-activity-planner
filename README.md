@@ -14,7 +14,9 @@ The goal is to show a clean, practical integration with a free third-party weath
 
 ## Current Status
 
-Initial project structure has been created. Open-Meteo integration and database persistence will be added in later verified steps.
+Initial project structure has been created. The dashboard now fetches and displays current weather for Copenhagen through Open-Meteo.
+
+Database persistence will be added in a later verified step.
 
 ## Project Structure
 

@@ -1,3 +1,5 @@
+using WeatherActivityPlanner.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
@@ -6,6 +8,7 @@ builder.Logging.AddDebug();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient<OpenMeteoWeatherService>();
 
 var app = builder.Build();
 
