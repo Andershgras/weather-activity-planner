@@ -12,6 +12,19 @@
     </p>
 </section>
 
+<section class="dashboard-controls" aria-label="Location selector">
+    <form method="get" class="location-form">
+        <label asp-for="SelectedLocationId">Location</label>
+        <select asp-for="SelectedLocationId" class="form-select">
+            @foreach (var location in IndexModel.AvailableLocations)
+            {
+                <option value="@location.Id">@location.Name</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary">Update weather</button>
+    </form>
+</section>
+
 <section class="dashboard-grid" aria-label="Dashboard overview">
     <div class="dashboard-panel">
         <h2>Current Weather</h2>

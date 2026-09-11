@@ -6,10 +6,6 @@ namespace WeatherActivityPlanner.Services;
 
 public class OpenMeteoWeatherService
 {
-    private const string CopenhagenName = "Copenhagen, Denmark";
-    private const double CopenhagenLatitude = 55.6761;
-    private const double CopenhagenLongitude = 12.5683;
-
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -25,10 +21,12 @@ public class OpenMeteoWeatherService
         _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
 
-    public async Task<WeatherSnapshot> GetCurrentWeatherForCopenhagenAsync(CancellationToken cancellationToken)
+    public async Task<WeatherSnapshot> GetCurrentWeatherAsync(
+        WeatherLocation location,
+        CancellationToken cancellationToken)
     {
         var requestUri = FormattableString.Invariant(
-            $"v1/forecast?latitude={CopenhagenLatitude}&longitude={CopenhagenLongitude}&current=temperature_2m,precipitation,rain,wind_speed_10m&timezone=auto");
+            $"v1/forecast?latitude={location.Latitude}&longitude={location.Longitude}&current=temperature_2m,precipitation,rain,wind_speed_10m&timezone=auto");
 
         using var response = await _httpClient.GetAsync(requestUri, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -46,7 +44,7 @@ public class OpenMeteoWeatherService
 
         return new WeatherSnapshot
         {
-            LocationName = CopenhagenName,
+            LocationName = location.Name,
             ObservedAt = DateTimeOffset.Parse(forecast.Current.Time),
             TemperatureCelsius = forecast.Current.Temperature2m,
             WindSpeedKmh = forecast.Current.WindSpeed10m,

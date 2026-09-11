@@ -14,7 +14,7 @@ The goal is to show a clean, practical integration with a free third-party weath
 
 ## Current Status
 
-Initial project structure has been created. The dashboard now fetches and displays current weather for Copenhagen through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
+Initial project structure has been created. The dashboard now fetches and displays current weather for a selected Danish location through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
 
 Database persistence will be added in a later verified step.
 
