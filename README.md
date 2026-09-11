@@ -27,8 +27,28 @@ src/
     wwwroot/
     Program.cs
     WeatherActivityPlanner.csproj
+tests/
+  WeatherActivityPlanner.Tests/
 docs/
   ai-development-guide.md
+```
+
+## Tests
+
+The test project is located in `tests/WeatherActivityPlanner.Tests`.
+
+Current tests cover the basic activity suggestion rules:
+
+- rain or precipitation shows a rain warning.
+- cold weather suggests an indoor activity.
+- very windy weather suggests an indoor activity.
+- mild and dry weather suggests walking.
+- dry weather with manageable wind outside the mild range suggests cycling.
+
+Run all tests from the repository root:
+
+```powershell
+dotnet test WeatherActivityPlanner.slnx
 ```
 
 ## Development Principles
