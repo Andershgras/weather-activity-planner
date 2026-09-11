@@ -45,7 +45,15 @@
     </div>
     <div class="dashboard-panel">
         <h2>Activity Plan</h2>
-        <p>Activity suggestion rules will be added in the next implementation step.</p>
+        @if (Model.ActivitySuggestion is not null)
+        {
+            <p class="suggestion-label @Model.ActivitySuggestion.Severity">@Model.ActivitySuggestion.Title</p>
+            <p>@Model.ActivitySuggestion.Description</p>
+        }
+        else
+        {
+            <p>Activity suggestions need current weather data.</p>
+        }
     </div>
     <div class="dashboard-panel">
         <h2>Saved Data</h2>

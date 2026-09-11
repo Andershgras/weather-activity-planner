@@ -8,6 +8,7 @@ builder.Logging.AddDebug();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<ActivitySuggestionService>();
 builder.Services.AddHttpClient<OpenMeteoWeatherService>();
 
 var app = builder.Build();

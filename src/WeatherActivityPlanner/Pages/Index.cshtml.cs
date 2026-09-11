@@ -7,13 +7,19 @@ namespace WeatherActivityPlanner.Pages;
 public class IndexModel : PageModel
 {
     private readonly OpenMeteoWeatherService _weatherService;
+    private readonly ActivitySuggestionService _activitySuggestionService;
 
-    public IndexModel(OpenMeteoWeatherService weatherService)
+    public IndexModel(
+        OpenMeteoWeatherService weatherService,
+        ActivitySuggestionService activitySuggestionService)
     {
         _weatherService = weatherService;
+        _activitySuggestionService = activitySuggestionService;
     }
 
     public WeatherSnapshot? CurrentWeather { get; private set; }
+
+    public ActivitySuggestion? ActivitySuggestion { get; private set; }
 
     public string? WeatherErrorMessage { get; private set; }
 
@@ -22,6 +28,7 @@ public class IndexModel : PageModel
         try
         {
             CurrentWeather = await _weatherService.GetCurrentWeatherForCopenhagenAsync(cancellationToken);
+            ActivitySuggestion = _activitySuggestionService.GetSuggestion(CurrentWeather);
         }
         catch
         {

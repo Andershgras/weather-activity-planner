@@ -117,3 +117,26 @@ body {
 .weather-error {
   color: #8a4b0f;
 }
+
+.suggestion-label {
+  border-radius: 6px;
+  display: inline-block;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0.6rem;
+}
+
+.suggestion-label.positive {
+  background: #e6f4ea;
+  color: #1e6b3a;
+}
+
+.suggestion-label.neutral {
+  background: #eef2f6;
+  color: #334e68;
+}
+
+.suggestion-label.warning {
+  background: #fff4d6;
+  color: #8a4b0f;
+}
