@@ -2,7 +2,7 @@
 
 Weather Activity Planner is a portfolio project built with ASP.NET Core and Razor Pages.
 
-The goal is to show a clean, practical integration with a free third-party weather API. The app will use Open-Meteo weather data to suggest simple activities such as walking, running, cycling, indoor activity, or a rain warning.
+The goal is to show a clean, practical integration with a free third-party weather API. The app uses Open-Meteo weather data to suggest simple activities such as walking, running, cycling, indoor activity, or a rain warning.
 
 ## MVP Scope
 
@@ -14,9 +14,20 @@ The goal is to show a clean, practical integration with a free third-party weath
 
 ## Current Status
 
-Initial project structure has been created. The dashboard now fetches and displays current weather for a selected Danish location through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
+The dashboard fetches and displays current weather for a selected Danish location through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
 
-Saved activity plans are persisted in a SQL Server LocalDB database named `WeatherPlannerDb`.
+Saved activity plans are persisted in a SQL Server LocalDB database named `WeatherPlannerDb`. Users can save the current activity plan, see the most recent saved plans, delete individual saved plans, clear all saved plans, and avoid saving duplicate plans for the same weather observation.
+
+## Implemented Features
+
+- Current weather dashboard for Copenhagen, Aarhus, and Odense.
+- Open-Meteo integration for temperature, wind, precipitation, and rain.
+- Simple activity suggestion rules based on current weather.
+- SQL Server LocalDB persistence for saved activity plans.
+- Recent saved plans list with total saved count.
+- Duplicate prevention for already saved activity plans.
+- Delete one saved plan or clear all saved plans.
+- Clean Razor Pages dashboard UI.
 
 ## Project Structure
 
@@ -31,6 +42,37 @@ tests/
   WeatherActivityPlanner.Tests/
 docs/
   ai-development-guide.md
+```
+
+## Database
+
+The app uses SQL Server LocalDB for saved activity plans.
+
+- Server: `(localdb)\MSSQLLocalDB`
+- Database: `WeatherPlannerDb`
+
+Apply migrations from the repository root:
+
+```powershell
+dotnet ef database update --project src\WeatherActivityPlanner\WeatherActivityPlanner.csproj --startup-project src\WeatherActivityPlanner\WeatherActivityPlanner.csproj
+```
+
+## Run the App
+
+Run the Razor Pages app from the repository root:
+
+```powershell
+dotnet run --project src\WeatherActivityPlanner\WeatherActivityPlanner.csproj
+```
+
+The terminal will show the local URL to open in the browser.
+
+## Build
+
+Build the solution from the repository root:
+
+```powershell
+dotnet build WeatherActivityPlanner.slnx
 ```
 
 ## Tests
