@@ -16,7 +16,7 @@ The goal is to show a clean, practical integration with a free third-party weath
 
 The dashboard fetches and displays current weather for a selected Danish location through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
 
-Saved activity plans are persisted in a SQL Server LocalDB database named `WeatherPlannerDb`. Users can save the current activity plan, see the most recent saved plans, delete individual saved plans, clear all saved plans, and avoid saving duplicate plans for the same weather observation.
+Saved activity plans and favorite locations are persisted in a SQL Server LocalDB database named `WeatherPlannerDb`. Users can save the current activity plan, see the most recent saved plans, delete individual saved plans, clear all saved plans, and avoid saving duplicate plans for the same weather observation. Users can also save favorite locations, see them sorted at the top of the location selector, and remove a selected location from favorites.
 
 ## Implemented Features
 
@@ -27,6 +27,8 @@ Saved activity plans are persisted in a SQL Server LocalDB database named `Weath
 - Recent saved plans list with total saved count.
 - Duplicate prevention for already saved activity plans.
 - Delete one saved plan or clear all saved plans.
+- Favorite locations sorted at the top of the location selector.
+- Save or remove the selected location as a favorite.
 - Clean Razor Pages dashboard UI.
 
 ## Project Structure
@@ -46,7 +48,7 @@ docs/
 
 ## Database
 
-The app uses SQL Server LocalDB for saved activity plans.
+The app uses SQL Server LocalDB for saved activity plans and favorite locations.
 
 - Server: `(localdb)\MSSQLLocalDB`
 - Database: `WeatherPlannerDb`
@@ -87,6 +89,7 @@ Current tests cover the basic activity suggestion rules:
 - mild and dry weather suggests walking.
 - dry weather with manageable wind outside the mild range suggests cycling.
 - saved activity plans copy the current weather and suggestion into a database-ready snapshot.
+- favorite locations copy the selected location into a database-ready snapshot.
 
 Run all tests from the repository root:
 
