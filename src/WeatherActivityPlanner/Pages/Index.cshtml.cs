@@ -54,6 +54,20 @@ public class IndexModel : PageModel
 
     public IReadOnlyList<SavedActivityPlan> SavedActivityPlans { get; private set; } = [];
 
+    public string SavedPlansSummary
+    {
+        get
+        {
+            return SavedActivityPlans.Count switch
+            {
+                0 => string.Empty,
+                1 => "1 saved plan",
+                5 => "Showing 5 recent plans",
+                _ => $"{SavedActivityPlans.Count} recent plans"
+            };
+        }
+    }
+
     public string? WeatherErrorMessage { get; private set; }
 
     public string? SavedDataErrorMessage { get; private set; }
