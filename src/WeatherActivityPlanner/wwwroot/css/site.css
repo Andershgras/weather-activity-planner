@@ -206,7 +206,8 @@ body {
   padding-top: 0.85rem;
 }
 
-.saved-plan-list div {
+.saved-plan-summary,
+.saved-plan-actions {
   display: grid;
   gap: 0.15rem;
 }
@@ -215,14 +216,36 @@ body {
   color: #1f2933;
 }
 
-.saved-plan-list span,
-.saved-plan-list small {
+.saved-plan-list span {
   color: #52606d;
 }
 
-.saved-plan-list small {
-  display: block;
-  margin-top: 0.25rem;
+.saved-plan-details {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+}
+
+.saved-plan-details div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.saved-plan-details dt {
+  color: #52606d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.saved-plan-details dd {
+  color: #334e68;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.saved-plan-actions {
+  margin-top: 0.75rem;
 }
 
 @media (max-width: 575px) {

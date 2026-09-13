@@ -98,22 +98,37 @@
                 @foreach (var plan in Model.SavedActivityPlans)
                 {
                     <li>
-                        <div>
+                        <div class="saved-plan-summary">
                             <strong>@plan.SuggestionTitle</strong>
-                            <span>@plan.LocationName</span>
+                            <span>@plan.SuggestionDescription</span>
                         </div>
-                        <small>
-                            @plan.CreatedAt.ToString("yyyy-MM-dd HH:mm") |
-                            @plan.TemperatureCelsius.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)&deg;C,
-                            @plan.WindSpeedKmh.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) km/h
-                        </small>
-                        <form method="post" asp-page-handler="DeletePlan" class="delete-plan-form">
-                            <input type="hidden" name="id" value="@plan.Id" />
-                            <input type="hidden" asp-for="SelectedLocationId" />
-                            <button type="submit" class="btn btn-outline-danger btn-sm" aria-label="Delete saved plan for @plan.LocationName">
-                                Delete
-                            </button>
-                        </form>
+                        <dl class="saved-plan-details">
+                            <div>
+                                <dt>Saved</dt>
+                                <dd>@plan.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+                            </div>
+                            <div>
+                                <dt>Location</dt>
+                                <dd>@plan.LocationName</dd>
+                            </div>
+                            <div>
+                                <dt>Weather</dt>
+                                <dd>
+                                    @plan.TemperatureCelsius.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)&deg;C,
+                                    @plan.WindSpeedKmh.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) km/h wind,
+                                    @plan.PrecipitationMm.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) mm precipitation
+                                </dd>
+                            </div>
+                        </dl>
+                        <div class="saved-plan-actions">
+                            <form method="post" asp-page-handler="DeletePlan" class="delete-plan-form">
+                                <input type="hidden" name="id" value="@plan.Id" />
+                                <input type="hidden" asp-for="SelectedLocationId" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm" aria-label="Delete saved plan for @plan.LocationName">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </li>
                 }
             </ul>
