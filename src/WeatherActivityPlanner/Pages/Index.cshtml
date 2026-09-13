@@ -25,6 +25,11 @@
     </form>
 </section>
 
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="dashboard-message" role="status">@Model.StatusMessage</div>
+}
+
 <section class="dashboard-grid" aria-label="Dashboard overview">
     <div class="dashboard-panel">
         <h2>Current Weather</h2>
@@ -62,6 +67,10 @@
         {
             <p class="suggestion-label @Model.ActivitySuggestion.Severity">@Model.ActivitySuggestion.Title</p>
             <p>@Model.ActivitySuggestion.Description</p>
+            <form method="post" asp-page-handler="SavePlan" class="save-plan-form">
+                <input type="hidden" asp-for="SelectedLocationId" />
+                <button type="submit" class="btn btn-outline-primary">Save plan</button>
+            </form>
         }
         else
         {
@@ -70,6 +79,32 @@
     </div>
     <div class="dashboard-panel">
         <h2>Saved Data</h2>
-        <p>Database-backed favorites or saved plans will be added in a later step.</p>
+        @if (!string.IsNullOrWhiteSpace(Model.SavedDataErrorMessage))
+        {
+            <p class="weather-error">@Model.SavedDataErrorMessage</p>
+        }
+        else if (Model.SavedActivityPlans.Count > 0)
+        {
+            <ul class="saved-plan-list">
+                @foreach (var plan in Model.SavedActivityPlans)
+                {
+                    <li>
+                        <div>
+                            <strong>@plan.SuggestionTitle</strong>
+                            <span>@plan.LocationName</span>
+                        </div>
+                        <small>
+                            @plan.CreatedAt.ToString("yyyy-MM-dd HH:mm") |
+                            @plan.TemperatureCelsius.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)&deg;C,
+                            @plan.WindSpeedKmh.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) km/h
+                        </small>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No saved activity plans yet.</p>
+        }
     </div>
 </section>

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using WeatherActivityPlanner.Data;
 using WeatherActivityPlanner.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ builder.Logging.AddDebug();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<WeatherPlannerDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<ActivitySuggestionService>();
 builder.Services.AddHttpClient<OpenMeteoWeatherService>();
 

@@ -61,6 +61,16 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.dashboard-message {
+  background: #e6f4ea;
+  border: 1px solid #b7dfc4;
+  border-radius: 8px;
+  color: #1e6b3a;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+}
+
 .location-form {
   align-items: end;
   display: grid;
@@ -83,7 +93,7 @@ body {
 .dashboard-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .dashboard-panel {
@@ -164,9 +174,49 @@ body {
   color: #8a4b0f;
 }
 
+.save-plan-form {
+  margin-top: 1rem;
+}
+
+.saved-plan-list {
+  display: grid;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.saved-plan-list li {
+  border-top: 1px solid #edf2f7;
+  padding-top: 0.85rem;
+}
+
+.saved-plan-list div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.saved-plan-list strong {
+  color: #1f2933;
+}
+
+.saved-plan-list span,
+.saved-plan-list small {
+  color: #52606d;
+}
+
+.saved-plan-list small {
+  display: block;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 575px) {
   .location-form {
     grid-template-columns: 1fr;
     max-width: none;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }

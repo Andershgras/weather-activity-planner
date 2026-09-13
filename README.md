@@ -16,7 +16,7 @@ The goal is to show a clean, practical integration with a free third-party weath
 
 Initial project structure has been created. The dashboard now fetches and displays current weather for a selected Danish location through Open-Meteo, then shows a basic activity suggestion based on simple weather rules.
 
-Database persistence will be added in a later verified step.
+Saved activity plans are persisted in a SQL Server LocalDB database named `WeatherPlannerDb`.
 
 ## Project Structure
 
@@ -44,6 +44,7 @@ Current tests cover the basic activity suggestion rules:
 - very windy weather suggests an indoor activity.
 - mild and dry weather suggests walking.
 - dry weather with manageable wind outside the mild range suggests cycling.
+- saved activity plans copy the current weather and suggestion into a database-ready snapshot.
 
 Run all tests from the repository root:
 

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using WeatherActivityPlanner.Data;
 using WeatherActivityPlanner.Models;
 using WeatherActivityPlanner.Services;
 
@@ -34,25 +36,74 @@ public class IndexModel : PageModel
 
     private readonly OpenMeteoWeatherService _weatherService;
     private readonly ActivitySuggestionService _activitySuggestionService;
+    private readonly WeatherPlannerDbContext _dbContext;
 
     public IndexModel(
         OpenMeteoWeatherService weatherService,
-        ActivitySuggestionService activitySuggestionService)
+        ActivitySuggestionService activitySuggestionService,
+        WeatherPlannerDbContext dbContext)
     {
         _weatherService = weatherService;
         _activitySuggestionService = activitySuggestionService;
+        _dbContext = dbContext;
     }
 
     public WeatherSnapshot? CurrentWeather { get; private set; }
 
     public ActivitySuggestion? ActivitySuggestion { get; private set; }
 
+    public IReadOnlyList<SavedActivityPlan> SavedActivityPlans { get; private set; } = [];
+
     public string? WeatherErrorMessage { get; private set; }
+
+    public string? SavedDataErrorMessage { get; private set; }
+
+    [TempData]
+    public string? StatusMessage { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string? SelectedLocationId { get; set; } = "copenhagen";
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
+    {
+        await LoadSavedActivityPlansAsync(cancellationToken);
+        await LoadCurrentWeatherAsync(cancellationToken);
+    }
+
+    public async Task<IActionResult> OnPostSavePlanAsync(CancellationToken cancellationToken)
+    {
+        await LoadCurrentWeatherAsync(cancellationToken);
+
+        if (CurrentWeather is null || ActivitySuggestion is null)
+        {
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            WeatherErrorMessage = "The activity plan could not be saved because current weather could not be loaded.";
+            return Page();
+        }
+
+        var savedPlan = SavedActivityPlan.CreateFrom(
+            CurrentWeather,
+            ActivitySuggestion,
+            DateTimeOffset.Now);
+
+        try
+        {
+            _dbContext.SavedActivityPlans.Add(savedPlan);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            SavedDataErrorMessage = "The activity plan could not be saved because the database could not be reached.";
+            return Page();
+        }
+
+        StatusMessage = "Activity plan saved.";
+
+        return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+    }
+
+    private async Task LoadCurrentWeatherAsync(CancellationToken cancellationToken)
     {
         var selectedLocation = AvailableLocations.FirstOrDefault(location => location.Id == SelectedLocationId)
             ?? AvailableLocations[0];
@@ -67,6 +118,23 @@ public class IndexModel : PageModel
         catch
         {
             WeatherErrorMessage = "Current weather could not be loaded. Please try again later.";
+        }
+    }
+
+    private async Task LoadSavedActivityPlansAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            SavedActivityPlans = await _dbContext.SavedActivityPlans
+                .OrderByDescending(plan => plan.CreatedAt)
+                .Take(5)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+        catch
+        {
+            SavedActivityPlans = [];
+            SavedDataErrorMessage = "Saved activity plans could not be loaded.";
         }
     }
 }
