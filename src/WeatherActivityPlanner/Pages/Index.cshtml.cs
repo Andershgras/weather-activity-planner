@@ -54,16 +54,31 @@ public class IndexModel : PageModel
 
     public IReadOnlyList<SavedActivityPlan> SavedActivityPlans { get; private set; } = [];
 
+    public int SavedActivityPlanCount { get; private set; }
+
     public string SavedPlansSummary
     {
         get
         {
-            return SavedActivityPlans.Count switch
+            if (SavedActivityPlanCount == 0)
             {
-                0 => string.Empty,
-                1 => "1 saved plan",
-                5 => "Showing 5 recent plans",
-                _ => $"{SavedActivityPlans.Count} recent plans"
+                return string.Empty;
+            }
+
+            if (SavedActivityPlanCount == 1)
+            {
+                return "1 saved plan";
+            }
+
+            if (SavedActivityPlanCount > SavedActivityPlans.Count)
+            {
+                return $"Showing {SavedActivityPlans.Count} of {SavedActivityPlanCount} saved plans";
+            }
+
+            return SavedActivityPlanCount switch
+            {
+                5 => "Showing 5 saved plans",
+                _ => $"{SavedActivityPlanCount} saved plans"
             };
         }
     }
@@ -196,6 +211,9 @@ public class IndexModel : PageModel
     {
         try
         {
+            SavedActivityPlanCount = await _dbContext.SavedActivityPlans
+                .CountAsync(cancellationToken);
+
             SavedActivityPlans = await _dbContext.SavedActivityPlans
                 .OrderByDescending(plan => plan.CreatedAt)
                 .Take(5)
@@ -205,6 +223,7 @@ public class IndexModel : PageModel
         catch
         {
             SavedActivityPlans = [];
+            SavedActivityPlanCount = 0;
             SavedDataErrorMessage = "Saved activity plans could not be loaded.";
         }
     }
