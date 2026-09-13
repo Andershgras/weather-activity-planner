@@ -54,7 +54,32 @@ public class IndexModel : PageModel
 
     public IReadOnlyList<SavedActivityPlan> SavedActivityPlans { get; private set; } = [];
 
+    public IReadOnlyList<FavoriteLocation> FavoriteLocations { get; private set; } = [];
+
     public int SavedActivityPlanCount { get; private set; }
+
+    public bool IsSelectedLocationFavorite
+    {
+        get
+        {
+            return FavoriteLocations.Any(location => location.LocationId == SelectedLocationId);
+        }
+    }
+
+    public IReadOnlyList<WeatherLocation> SortedAvailableLocations
+    {
+        get
+        {
+            var favoriteLocationIds = FavoriteLocations
+                .Select(location => location.LocationId)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return AvailableLocations
+                .OrderByDescending(location => favoriteLocationIds.Contains(location.Id))
+                .ThenBy(location => location.Name)
+                .ToList();
+        }
+    }
 
     public string SavedPlansSummary
     {
@@ -87,6 +112,8 @@ public class IndexModel : PageModel
 
     public string? SavedDataErrorMessage { get; private set; }
 
+    public string? FavoriteLocationsErrorMessage { get; private set; }
+
     [TempData]
     public string? StatusMessage { get; set; }
 
@@ -95,6 +122,7 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
+        await LoadFavoriteLocationsAsync(cancellationToken);
         await LoadSavedActivityPlansAsync(cancellationToken);
         await LoadCurrentWeatherAsync(cancellationToken);
     }
@@ -140,6 +168,70 @@ public class IndexModel : PageModel
         }
 
         StatusMessage = "Activity plan saved.";
+
+        return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+    }
+
+    public async Task<IActionResult> OnPostSaveFavoriteLocationAsync(CancellationToken cancellationToken)
+    {
+        var selectedLocation = GetSelectedLocation();
+        SelectedLocationId = selectedLocation.Id;
+
+        try
+        {
+            var alreadySaved = await _dbContext.FavoriteLocations.AnyAsync(
+                location => location.LocationId == selectedLocation.Id,
+                cancellationToken);
+
+            if (alreadySaved)
+            {
+                StatusMessage = "This location is already a favorite.";
+                return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+            }
+
+            _dbContext.FavoriteLocations.Add(FavoriteLocation.CreateFrom(selectedLocation, DateTimeOffset.Now));
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            await LoadCurrentWeatherAsync(cancellationToken);
+            await LoadFavoriteLocationsAsync(cancellationToken);
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            FavoriteLocationsErrorMessage = "The favorite location could not be saved because the database could not be reached.";
+            return Page();
+        }
+
+        StatusMessage = "Favorite location saved.";
+
+        return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+    }
+
+    public async Task<IActionResult> OnPostRemoveFavoriteLocationAsync(CancellationToken cancellationToken)
+    {
+        var selectedLocation = GetSelectedLocation();
+        SelectedLocationId = selectedLocation.Id;
+
+        try
+        {
+            var favoriteLocation = await _dbContext.FavoriteLocations
+                .FirstOrDefaultAsync(location => location.LocationId == selectedLocation.Id, cancellationToken);
+
+            if (favoriteLocation is not null)
+            {
+                _dbContext.FavoriteLocations.Remove(favoriteLocation);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+        catch
+        {
+            await LoadCurrentWeatherAsync(cancellationToken);
+            await LoadFavoriteLocationsAsync(cancellationToken);
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            FavoriteLocationsErrorMessage = "The favorite location could not be deleted because the database could not be reached.";
+            return Page();
+        }
+
+        StatusMessage = "Favorite location deleted.";
 
         return RedirectToPage(new { selectedLocationId = SelectedLocationId });
     }
@@ -191,8 +283,7 @@ public class IndexModel : PageModel
 
     private async Task LoadCurrentWeatherAsync(CancellationToken cancellationToken)
     {
-        var selectedLocation = AvailableLocations.FirstOrDefault(location => location.Id == SelectedLocationId)
-            ?? AvailableLocations[0];
+        var selectedLocation = GetSelectedLocation();
 
         SelectedLocationId = selectedLocation.Id;
 
@@ -204,6 +295,28 @@ public class IndexModel : PageModel
         catch
         {
             WeatherErrorMessage = "Current weather could not be loaded. Please try again later.";
+        }
+    }
+
+    private WeatherLocation GetSelectedLocation()
+    {
+        return AvailableLocations.FirstOrDefault(location => location.Id == SelectedLocationId)
+            ?? AvailableLocations[0];
+    }
+
+    private async Task LoadFavoriteLocationsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            FavoriteLocations = await _dbContext.FavoriteLocations
+                .OrderBy(location => location.Name)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+        catch
+        {
+            FavoriteLocations = [];
+            FavoriteLocationsErrorMessage = "Favorite locations could not be loaded.";
         }
     }
 
