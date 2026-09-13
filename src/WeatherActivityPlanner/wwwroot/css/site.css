@@ -254,6 +254,24 @@ body {
   margin-top: 0.75rem;
 }
 
+.saved-action-link {
+  background: transparent;
+  border: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0;
+  text-align: left;
+}
+
+.saved-action-link-danger {
+  color: #9f1239;
+}
+
+.saved-action-link:hover,
+.saved-action-link:focus {
+  text-decoration: underline;
+}
+
 @media (max-width: 575px) {
   .location-form {
     grid-template-columns: 1fr;

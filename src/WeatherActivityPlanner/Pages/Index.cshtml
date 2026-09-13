@@ -90,7 +90,7 @@
             {
                 <form method="post" asp-page-handler="ClearPlans" onsubmit="return confirm('Clear all saved activity plans?');">
                     <input type="hidden" asp-for="SelectedLocationId" />
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Clear all</button>
+                    <button type="submit" class="saved-action-link saved-action-link-danger">Clear all</button>
                 </form>
             }
         </div>
@@ -130,8 +130,8 @@
                             <form method="post" asp-page-handler="DeletePlan" class="delete-plan-form" onsubmit="return confirm('Delete this saved activity plan?');">
                                 <input type="hidden" name="id" value="@plan.Id" />
                                 <input type="hidden" asp-for="SelectedLocationId" />
-                                <button type="submit" class="btn btn-outline-danger btn-sm" aria-label="Delete saved plan for @plan.LocationName">
-                                    Delete
+                                <button type="submit" class="saved-action-link saved-action-link-danger" aria-label="Delete saved plan for @plan.LocationName">
+                                    Delete plan
                                 </button>
                             </form>
                         </div>
