@@ -88,6 +88,18 @@ public class IndexModel : PageModel
 
         try
         {
+            var alreadySaved = await _dbContext.SavedActivityPlans.AnyAsync(
+                plan => plan.LocationName == savedPlan.LocationName
+                    && plan.ObservedAt == savedPlan.ObservedAt
+                    && plan.SuggestionTitle == savedPlan.SuggestionTitle,
+                cancellationToken);
+
+            if (alreadySaved)
+            {
+                StatusMessage = "This activity plan is already saved.";
+                return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+            }
+
             _dbContext.SavedActivityPlans.Add(savedPlan);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
