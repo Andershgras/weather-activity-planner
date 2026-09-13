@@ -129,6 +129,25 @@ public class IndexModel : PageModel
         return RedirectToPage(new { selectedLocationId = SelectedLocationId });
     }
 
+    public async Task<IActionResult> OnPostClearPlansAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dbContext.SavedActivityPlans.ExecuteDeleteAsync(cancellationToken);
+        }
+        catch
+        {
+            await LoadCurrentWeatherAsync(cancellationToken);
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            SavedDataErrorMessage = "Saved activity plans could not be cleared because the database could not be reached.";
+            return Page();
+        }
+
+        StatusMessage = "Saved activity plans cleared.";
+
+        return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+    }
+
     private async Task LoadCurrentWeatherAsync(CancellationToken cancellationToken)
     {
         var selectedLocation = AvailableLocations.FirstOrDefault(location => location.Id == SelectedLocationId)
