@@ -98,6 +98,13 @@
                             @plan.TemperatureCelsius.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)&deg;C,
                             @plan.WindSpeedKmh.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) km/h
                         </small>
+                        <form method="post" asp-page-handler="DeletePlan" class="delete-plan-form">
+                            <input type="hidden" name="id" value="@plan.Id" />
+                            <input type="hidden" asp-for="SelectedLocationId" />
+                            <button type="submit" class="btn btn-outline-danger btn-sm" aria-label="Delete saved plan for @plan.LocationName">
+                                Delete
+                            </button>
+                        </form>
                     </li>
                 }
             </ul>

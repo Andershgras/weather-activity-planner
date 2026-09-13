@@ -103,6 +103,32 @@ public class IndexModel : PageModel
         return RedirectToPage(new { selectedLocationId = SelectedLocationId });
     }
 
+    public async Task<IActionResult> OnPostDeletePlanAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var savedPlan = await _dbContext.SavedActivityPlans
+                .FirstOrDefaultAsync(plan => plan.Id == id, cancellationToken);
+
+            if (savedPlan is not null)
+            {
+                _dbContext.SavedActivityPlans.Remove(savedPlan);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+        catch
+        {
+            await LoadCurrentWeatherAsync(cancellationToken);
+            await LoadSavedActivityPlansAsync(cancellationToken);
+            SavedDataErrorMessage = "The activity plan could not be deleted because the database could not be reached.";
+            return Page();
+        }
+
+        StatusMessage = "Activity plan deleted.";
+
+        return RedirectToPage(new { selectedLocationId = SelectedLocationId });
+    }
+
     private async Task LoadCurrentWeatherAsync(CancellationToken cancellationToken)
     {
         var selectedLocation = AvailableLocations.FirstOrDefault(location => location.Id == SelectedLocationId)

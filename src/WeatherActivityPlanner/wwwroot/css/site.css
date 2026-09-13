@@ -178,6 +178,10 @@ body {
   margin-top: 1rem;
 }
 
+.delete-plan-form {
+  margin-top: 0.65rem;
+}
+
 .saved-plan-list {
   display: grid;
   gap: 0.85rem;
